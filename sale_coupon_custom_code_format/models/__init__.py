@@ -1,1 +1,1 @@
-from . import human_coupon
+from . import custom_format_coupon
