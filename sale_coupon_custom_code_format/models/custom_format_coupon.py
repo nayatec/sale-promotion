@@ -1,7 +1,8 @@
-from odoo import models, api, fields, _
-from odoo.exceptions import ValidationError
-from string import ascii_lowercase, ascii_uppercase, digits
 from random import choice
+from string import ascii_lowercase, ascii_uppercase, digits
+
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class CustomFormatCoupon(models.Model):
@@ -13,7 +14,7 @@ class CustomFormatCoupon(models.Model):
 
     def _generate_code_from_mask(self):
         def unmask(char):
-            # x means a random lowercase character
+            # x means a random lowercase letter
             if char == "x":
                 return choice(
                     [
@@ -22,7 +23,7 @@ class CustomFormatCoupon(models.Model):
                         if char not in self._forbidden_characters
                     ]
                 )
-            # x means a random uppercase character
+            # x means a random uppercase letter
             if char == "X":
                 return choice(
                     [
