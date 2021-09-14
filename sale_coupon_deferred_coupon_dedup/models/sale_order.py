@@ -43,9 +43,8 @@ class SaleOrder(models.Model):
 
     def _get_valid_applied_coupon_program(self):
         # Add unconfirmed coupon programs to this getter
-        self.ensure_one()
-
-        programs = (
+        programs = super()._get_valid_applied_coupon_program()
+        programs += (
             self.unconfirmed_applied_coupon_ids.mapped("program_id")
             .filtered(lambda p: p.promo_applicability == "on_next_order")
             ._filter_programs_from_common_rules(self, True)
@@ -56,7 +55,7 @@ class SaleOrder(models.Model):
             ._filter_programs_from_common_rules(self)
         )
 
-        return programs + super()._get_valid_applied_coupon_program()
+        return programs
 
     def _remove_invalid_reward_lines(self):
         # Remove also unconfirmed coupons from programs
@@ -92,9 +91,16 @@ class SaleOrder(models.Model):
     def _get_applied_programs_with_rewards_on_current_order(self):
         # Add unconfirmed coupon programs to this getter
 
+        # /!\ We need to keep order
         return (
-            super()._get_applied_programs_with_rewards_on_current_order()
+            self.no_code_promo_program_ids.filtered(
+                lambda p: p.promo_applicability == "on_current_order"
+            )
+            + self.applied_coupon_ids.mapped("program_id")
             + self.unconfirmed_applied_coupon_ids.mapped("program_id")
+            + self.code_promo_program_id.filtered(
+                lambda p: p.promo_applicability == "on_current_order"
+            )
         )
 
     def _get_applied_programs(self):
