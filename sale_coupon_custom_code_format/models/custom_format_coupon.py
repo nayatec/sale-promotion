@@ -9,7 +9,7 @@ class CustomFormatCoupon(models.Model):
     _inherit = "coupon.coupon"
 
     _code_mask = "XXXXXX-00"
-    _forbidden_characters = frozenset("iI1oO0")
+    _forbidden_characters = "iI1oO0"
     _dedup_max_retries = 20
 
     def _generate_code_from_mask(self, choices):
